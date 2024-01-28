@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const JWTKEY = process.env.JWTKEY
+const JWTKEY = 'process.env.JWTKEY'
 
 const authMW = (req , res , next) => {
     const headerJWT = req.headers.authorization
@@ -13,7 +13,7 @@ const authMW = (req , res , next) => {
 
     try {
         const decodedJWT = jwt.verify(token, JWTKEY)
-        req.userid = decodedJWT.userid //doubt
+        req.userid = decodedJWT
         next()
     } catch (err) {
         return res.status(403).send({msg: 'caught error jwt'})
@@ -22,3 +22,4 @@ const authMW = (req , res , next) => {
 }
 
 module.exports = authMW
+

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-mongoose.connect(process.env.DB_URL)
+mongoose.connect('mongodb+srv://iminoaru:mongopass@authdatacohort.met821i.mongodb.net/Dhani')
 
 const userSchema = new mongoose.Schema({
     firstname: {
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
 
 
 const accountSchema = new mongoose.Schema({
-    userId: {
+    userid: {
         type: mongoose.Schema.Types.ObjectId, // Reference to User model
         ref: 'User',
         required: true

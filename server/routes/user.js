@@ -2,9 +2,10 @@ const express = require('express')
 const { signupZod , loginZod, updateZod} = require('../zod/types')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const JWTKEY = process.env.JWTKEY
+const JWTKEY = 'process.env.JWTKEY'
 const router = express.Router()
-const { Userdb } = require('../database/schema')
+const { ObjectId } = require('mongodb');
+const { Userdb, Accountdb} = require('../database/schema')
 const authMW = require("../middleware/jwtMW");
 router.post('/signup' , async (req , res) => {
     const goodData = signupZod.safeParse(req.body)
@@ -28,6 +29,16 @@ router.post('/signup' , async (req , res) => {
     })
 
     const userid = newUser._id.toString()
+
+    const giveBalance = await Accountdb.create({
+        userid : userid,
+        balance : 8000
+    })
+
+    if(!giveBalance){
+        res.status(411).send({msg : 'error in assigning initial balance'})
+        return
+    }
 
     const token = jwt.sign( userid , JWTKEY )
 
@@ -71,9 +82,9 @@ router.put('/' , authMW , async (req , res) => {
         res.status(411).send({msg : 'invalid inputs'})
     }
 
-    const updateUser = await Userdb.updateOne(req.body , {
-        _id : req.userid
-    })
+    const updateUser = await Userdb.updateOne({
+        _id : new ObjectId(req.userid)
+    }, req.body)
 
     if(!updateUser){
         res.status(411).send({msg : 'unable to update'})
@@ -87,11 +98,11 @@ router.get('/friends' , async (req , res) => {
 
     const filteredUser = await Userdb.find({
         $or: [{
-            firstName: {
+            firstname: {
                 "$regex": filter
             }
         }, {
-            lastName: {
+            lastname: {
                 "$regex": filter
             }
         }]
@@ -99,11 +110,11 @@ router.get('/friends' , async (req , res) => {
 
     res.status(200).send({
         msg : 'successfully filtered',
-        filteredUsers : filteredUser.map((x) => ({
-            email: x.email,
-            firstname : x.firstname,
-            lastname : x.lastname,
-            _id : x._id
+        filteredUsers : filteredUser.map((filteredUsers) => ({
+            email: filteredUsers.email,
+            firstname : filteredUsers.firstname,
+            lastname : filteredUsers.lastname,
+            _id : filteredUsers._id.toString()
         }))
     })
 })
