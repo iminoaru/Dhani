@@ -4,20 +4,19 @@ require('dotenv').config()
 mongoose.connect(process.env.DB_URL)
 
 const userSchema = new mongoose.Schema({
-
     firstname: {
         type: String,
         required: true,
         trim: true,
-        minLength: 3,
-        maxLength: 50
+        minlength: 3,
+        maxlength: 50
     },
     lastname: {
         type: String,
         required: true,
         trim: true,
-        minLength: 3,
-        maxLength: 50
+        minlength: 3,
+        maxlength: 50
     },
     email: {
         type: String,
@@ -25,16 +24,16 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        minLength: 3,
-        maxLength: 50
+        minlength: 3,
+        maxlength: 50
     },
     password: {
         type: String,
         required: true,
-        minLength: 6
+        minlength: 6
     }
+}, { strict: 'throw' });
 
-});
 
 const accountSchema = new mongoose.Schema({
     userId: {

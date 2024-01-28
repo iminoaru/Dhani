@@ -12,4 +12,10 @@ const loginZod = zod.object({
     password: zod.string().min(6)
 })
 
-module.exports = { signupZod , loginZod }
+const updateZod = zod.object({
+    firstname: zod.string().min(3).max(50),
+    lastname: zod.string().min(3).max(50),
+    password: zod.string().min(6)
+})
+
+module.exports = { signupZod , loginZod , updateZod}
