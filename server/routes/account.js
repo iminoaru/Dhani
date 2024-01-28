@@ -22,6 +22,7 @@ router.get('/balance' , authMW , async (req , res) => {
 })
 
 router.post('/transfer' , authMW , async (req , res) => {
+
     const session = await mongoose.startSession()
 
     session.startTransaction()
@@ -31,6 +32,13 @@ router.post('/transfer' , authMW , async (req , res) => {
     const acc = await Accountdb.findOne({
         userid : req.userid
     })
+
+    if(amount < 0){
+        await session.abortTransaction()
+        return res.status(400).send({
+            msg : "Can't send negative amount"
+        })
+    }
 
     if(!acc || acc.balance < amount){
         await session.abortTransaction()
