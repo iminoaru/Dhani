@@ -2,7 +2,7 @@ const express = require('express')
 const { signupZod , loginZod, updateZod} = require('../zod/types')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const JWTKEY = 'process.env.JWTKEY'
+const JWTKEY = process.env.JWTKEY
 const router = express.Router()
 const { ObjectId } = require('mongodb');
 const { Userdb, Accountdb} = require('../database/schema')
@@ -93,7 +93,7 @@ router.put('/' , authMW , async (req , res) => {
     res.status(200).send({msg : 'updated successfully'})
 })
 
-router.get('/friends' , async (req , res) => {
+router.get('/friends' , authMW , async (req , res) => {
     const filter = req.query.search || ''
 
     const filteredUser = await Userdb.find({

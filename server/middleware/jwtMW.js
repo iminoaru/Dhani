@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const JWTKEY = 'process.env.JWTKEY'
+const JWTKEY = process.env.JWTKEY
 
 const authMW = (req , res , next) => {
     const headerJWT = req.headers.authorization

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-mongoose.connect('mongodb+srv://iminoaru:mongopass@authdatacohort.met821i.mongodb.net/Dhani')
+mongoose.connect(process.env.DB_URL)
 
 const userSchema = new mongoose.Schema({
     firstname: {
