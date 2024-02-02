@@ -9,8 +9,9 @@ const { Userdb, Accountdb} = require('../database/schema')
 const authMW = require("../middleware/jwtMW");
 router.post('/signup' , async (req , res) => {
     const goodData = signupZod.safeParse(req.body)
-    if(!goodData){
-        res.status(411).send({msg : 'input seems wrong'})
+    if(!goodData.success){
+        res.status(400).send({msg : 'input seems wrong'})
+        return
     }
 
     const checkNewUser = await Userdb.findOne({
@@ -53,17 +54,23 @@ router.post('/login' , async (req , res) => {
 
     if(!goodData){
         res.status(411).send({msg : 'invalid input'})
+        return
     }
 
     const userFound = await Userdb.findOne({
-        email : req.body.email,
-        password: req.body.password
+        email : req.body.email
     })
 
     if(!userFound){
-        res.status(411).send({msg : 'email not registered'})
+        res.status(401).send({msg : 'email not registered'})
         return
     }
+
+    if((userFound.password !== req.body.password) ){
+        res.status(401).send({msg : 'incorrect password'})
+        return
+    }
+
 
     const userid = userFound._id.toString()
 
@@ -75,7 +82,7 @@ router.post('/login' , async (req , res) => {
     })
 })
 
-router.put('/' , authMW , async (req , res) => {
+router.put('/update' , authMW , async (req , res) => {
     const goodData = updateZod.safeParse(req.body)
 
     if(!goodData){
@@ -95,17 +102,20 @@ router.put('/' , authMW , async (req , res) => {
 
 router.get('/friends' , authMW , async (req , res) => {
     const filter = req.query.search || ''
+    const loggedInUserId = new ObjectId(req.userid)
 
     const filteredUser = await Userdb.find({
-        $or: [{
-            firstname: {
-                "$regex": filter
+        $and: [
+            {
+                _id: { $ne: loggedInUserId } // Exclude the logged-in user
+            },
+            {
+                $or: [
+                    { firstname: { "$regex": filter } },
+                    { lastname: { "$regex": filter } }
+                ]
             }
-        }, {
-            lastname: {
-                "$regex": filter
-            }
-        }]
+        ]
     })
 
     res.status(200).send({

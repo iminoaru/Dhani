@@ -1,14 +1,44 @@
-import { useSearchParams } from 'react-router-dom';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import axios from "axios";
 import { useState } from 'react';
+import {Popup} from "../components/Popup.jsx";
+import {SuccessPopup} from "../components/SuccessPopup.jsx";
+
 
 export const Send = () => {
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
     const name = searchParams.get("name");
     const [amount, setAmount] = useState(0);
+    const [emptyPopup , setEmptyPopup] = useState(false);
+    const [checkPopup , setCheckPopup] = useState(false);
+    const [successPopup , setSuccessPopup] = useState(false);
 
-    return <div class="flex justify-center h-screen bg-gray-100">
+    const navigate = useNavigate();
+
+    const handleTransaction = async () => {
+        if(!amount){
+            setEmptyPopup(true);
+        }
+        try {
+            const response = await axios.post("http://localhost:3001/api/v1/account/transfer", {
+                to: id,
+                amount
+            }, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
+            })
+            setSuccessPopup(true)
+            setTimeout(() => navigate('/dashboard') , 2000)
+        } catch(error) {
+            setCheckPopup(true)
+        }
+
+    }
+
+    return (
+        <div class="flex justify-center h-screen bg-gray-100">
         <div className="h-full flex flex-col justify-center">
             <div
                 class="border h-min text-card-foreground max-w-md p-4 space-y-8 w-96 bg-white shadow-lg rounded-lg"
@@ -41,24 +71,23 @@ export const Send = () => {
                                 placeholder="Enter amount"
                             />
                         </div>
-                        <button onClick={async () => {
-                            const response = await axios.post("http://localhost:3001/api/v1/account/transfer", {
-                                to: id,
-                                amount
-                            }, {
-                                headers: {
-                                    Authorization: "Bearer " + localStorage.getItem("token")
-                                }
-                            })
-
-                        }
-
-                        } class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
+                        <button onClick={handleTransaction} class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
                             Initiate Transfer
                         </button>
                     </div>
                 </div>
             </div>
+            {emptyPopup && <Popup title = {'empty fields'}
+                                  content = {'please enter amount to be sent'}
+            />}
+            {checkPopup && <Popup title = {'Invalid amount'}
+                                  content = {'Insufficient balance'}
+            />}
+            {successPopup && <SuccessPopup title={'Success'}
+                                    content={`Transaction of Rs. ${amount} successful`}
+            />}
         </div>
-    </div>
+        </div>
+
+    )
 }
