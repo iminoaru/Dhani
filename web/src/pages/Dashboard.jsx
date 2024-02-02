@@ -8,7 +8,7 @@ export const Dashboard = () => {
     const [balance , setBalance] = useState(0)
     useEffect( () => {
         const fetchBalance = async () => {
-            const response = await axios.get('http://localhost:3001/api/v1/account/balance',
+            const response = await axios.get('https://dhani.vercel.app/api/v1/account/balance',
                 {
                     headers: {
                         Authorization: "Bearer " + localStorage.getItem("token")
