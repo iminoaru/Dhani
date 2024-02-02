@@ -111,8 +111,8 @@ router.get('/friends' , authMW , async (req , res) => {
             },
             {
                 $or: [
-                    { firstname: { "$regex": filter } },
-                    { lastname: { "$regex": filter } }
+                    { firstname: { "$regex": filter , "$options": "i"} },
+                    { lastname: { "$regex": filter , "$options": "i"} }
                 ]
             }
         ]

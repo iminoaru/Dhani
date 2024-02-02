@@ -19,6 +19,7 @@ export const Send = () => {
     const handleTransaction = async () => {
         if(!amount){
             setEmptyPopup(true);
+            return
         }
         try {
             const response = await axios.post("http://localhost:3001/api/v1/account/transfer", {

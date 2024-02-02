@@ -73,7 +73,7 @@ export const Signup = () => {
                                             A valid email address
                                         </>
                                     }
-            />}
+            /> }
         </div>
     </div>
 }
