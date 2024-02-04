@@ -1,6 +1,8 @@
 # Dhani
 
-A Transaction app that allows users to send and receive money .
+A Transaction app that allows users to send and receive money.
+A fixed amount of Rs.8000 is allocated to the user on initial signup
+that can be used to make transactions.
 
 ## Tech Used
 
