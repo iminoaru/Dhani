@@ -23,7 +23,7 @@ export const Signup = () => {
             return
         }
         try {
-            const response = await axios.post("https://dhani.vercel.app/api/v1/user/signup", {
+            const response = await axios.post("http://localhost:3001/api/v1/user/signup", {
                 email,
                 firstname,
                 lastname,

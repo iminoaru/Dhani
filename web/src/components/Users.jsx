@@ -40,7 +40,7 @@ export const Users = () => {
     useEffect(() => {
         const fetchUsers = async () => {
 
-        const response = await axios.get("https://dhani.vercel.app/api/v1/user/friends?search=" + filter, {
+        const response = await axios.get("http://localhost:3001/api/v1/user/friends?search=" + filter, {
 
             headers : {
                 Authorization: "Bearer " + localStorage.getItem("token")

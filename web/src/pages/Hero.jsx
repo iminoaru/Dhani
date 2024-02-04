@@ -4,7 +4,7 @@ export const Hero = () => {
 
     const navigate = useNavigate()
         const goToGithub = () => {
-            window.location.href = 'https://github.com/iminoaru/Dhani'; // Replace with your GitHub URL
+            window.location.href = 'https://github.com/iminoaru/Dhani';
         };
 
         const redirectLogin = () => navigate('/login')
