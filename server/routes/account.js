@@ -33,7 +33,7 @@ router.post('/transfer' , authMW , async (req , res) => {
         userid : req.userid
     })
 
-    if(amount < 0){
+    if(amount < 1){
         await session.abortTransaction()
         return res.status(400).send({
             msg : "Can't send negative amount"
